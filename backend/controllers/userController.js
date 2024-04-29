@@ -5,9 +5,9 @@ const jwt = require("jsonwebtoken");
 
 const jwtSecret = process.env.JWT_CODE;
 
-//token generete
-const genereteToken = ({ id }) => {
-  return jwt.sign({ id }, jwtSecret, { expiresIn: "7d" });
+//token generate
+const generateToken = ({ id }) => {
+  return jwt.sign({ id }, jwtSecret, { expiresIn: "7d" }); //{id:id}
 };
 
 const register = async (req, res) => {
@@ -41,7 +41,7 @@ const register = async (req, res) => {
     }
     res.status(201).json({
       _id: user._id,
-      token: genereteToken(user._id),
+      token: generateToken({ id: user._id }),
     });
   } catch (e) {
     return res.json(e);
@@ -69,7 +69,7 @@ const login = async (req, res) => {
   res.status(201).json({
     _id: user._id,
     profileImage: user.profileImage,
-    token: genereteToken(user._id),
+    token: generateToken({ id: user._id }),
   });
 };
 
@@ -78,8 +78,13 @@ const getCurrentUser = async (req, res) => {
 
   res.status(200).json(user);
 };
+
+const updateUser = async (req, res) => {
+  res.send("update");
+};
 module.exports = {
   register,
   login,
   getCurrentUser,
+  updateUser,
 };

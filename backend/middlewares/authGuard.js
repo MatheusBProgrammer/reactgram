@@ -10,13 +10,13 @@ const jwtSecret = process.env.JWT_CODE;
 // Middleware de guarda de autenticação
 const authGuard = async (req, res, next) => {
   // Obtém o cabeçalho de autorização da requisição
-  const authHeader = req.body["authorization"];
+  const authHeader = req.headers["authorization"];
 
   // Extrai o token do cabeçalho de autorização
   const token = authHeader && authHeader.split(" ")[1]; // separa o token em duas parte e pega a segunda
 
   // Verifica se o token existe
-  if (!token) return res.status(401).json({ errors: "Acesso negado!" });
+  if (!token) return res.status(401).json({ errors: "Acesso negado" });
 
   // Verifica se o token é válido
   try {
