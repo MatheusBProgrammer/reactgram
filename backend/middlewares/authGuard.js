@@ -24,6 +24,7 @@ const authGuard = async (req, res, next) => {
     const verified = jwt.verify(token, jwtSecret);
 
     // Busca o usuário pelo ID contido no token e exclui a senha do resultado
+    //define req.user
     req.user = await User.findById(verified.id).select("-password");
 
     // Chama o próximo middleware na cadeia

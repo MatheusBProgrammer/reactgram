@@ -2,7 +2,7 @@
 const User = require("../models/User");
 const bycrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
+const mongoose = require("mongoose");
 const jwtSecret = process.env.JWT_CODE;
 
 //token generate
@@ -75,12 +75,46 @@ const login = async (req, res) => {
 
 const getCurrentUser = async (req, res) => {
   const user = req.user;
-
   res.status(200).json(user);
 };
 
 const updateUser = async (req, res) => {
-  res.send("update");
+  const { name, password, bio } = req.body;
+
+  let profileImage = null;
+
+  try {
+    if (req.file) {
+      profileImage = req.file.filename;
+    }
+
+    const reqUser = req.user;
+
+    const user = await User.findById(reqUser._id).select("-password");
+
+    if (name) {
+      user.name = name;
+    }
+
+    if (password) {
+      const salt = await bycrypt.genSalt();
+      const passwordHash = await bycrypt.hash(password, salt);
+
+      user.password = passwordHash;
+    }
+
+    if (profileImage) {
+      user.profileImage = profileImage;
+    }
+
+    if (bio) {
+      user.bio = bio;
+    }
+    await user.save();
+    res.status(200).json(user);
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
 };
 module.exports = {
   register,
