@@ -84,36 +84,72 @@ const updateUser = async (req, res) => {
   let profileImage = null;
 
   try {
+    // Verificar se há um arquivo de imagem na requisição
     if (req.file) {
+      // Se sim, atribuir o nome do arquivo à variável profileImage
       profileImage = req.file.filename;
     }
 
+    // Obter o usuário atual da requisição a partir do objeto req
     const reqUser = req.user;
 
+    // Buscar o usuário no banco de dados pelo seu ID e excluir o campo de senha do retorno
     const user = await User.findById(reqUser._id).select("-password");
 
+    // Verificar se foi fornecido um novo nome para o usuário
     if (name) {
+      // Se sim, atualizar o nome do usuário
       user.name = name;
     }
 
+    // Verificar se foi fornecida uma nova senha para o usuário
     if (password) {
+      // Se sim, gerar um novo hash de senha utilizando bcrypt
       const salt = await bycrypt.genSalt();
       const passwordHash = await bycrypt.hash(password, salt);
 
+      // Atualizar a senha do usuário com o novo hash
       user.password = passwordHash;
     }
 
+    // Verificar se foi fornecida uma nova imagem de perfil para o usuário
     if (profileImage) {
+      // Se sim, atualizar a imagem de perfil do usuário
       user.profileImage = profileImage;
     }
 
+    // Verificar se foi fornecida uma nova biografia para o usuário
     if (bio) {
+      // Se sim, atualizar a biografia do usuário
       user.bio = bio;
     }
+
+    // Salvar as alterações feitas no usuário no banco de dados
     await user.save();
+
+    // Responder à requisição com o usuário atualizado
     res.status(200).json(user);
   } catch (e) {
+    // Se ocorrer um erro durante o processo, responder com um status 400 e uma mensagem de erro
     res.status(400).json({ error: e.message });
+  }
+};
+
+const getUserById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id).select("-password");
+
+    if (!user) {
+      res.status(404).json({ errors: "Usuário não encontrado" });
+      return;
+    }
+
+    res.status(200).json(user);
+    return;
+  } catch (e) {
+    return res.status(404).json({ errors: e.message });
   }
 };
 module.exports = {
@@ -121,4 +157,5 @@ module.exports = {
   login,
   getCurrentUser,
   updateUser,
+  getUserById,
 };

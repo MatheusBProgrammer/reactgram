@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 // Obtém a chave secreta JWT do ambiente
 const jwtSecret = process.env.JWT_CODE;
 
-// Middleware de guarda de autenticação
+// Middleware de autenticação do token e definição do req.user
 const authGuard = async (req, res, next) => {
   // Obtém o cabeçalho de autorização da requisição
   const authHeader = req.headers["authorization"];
@@ -28,6 +28,7 @@ const authGuard = async (req, res, next) => {
     req.user = await User.findById(verified.id).select("-password");
 
     // Chama o próximo middleware na cadeia
+    console.log(req.user);
     next();
   } catch (e) {
     // Retorna um erro caso o token seja inválido

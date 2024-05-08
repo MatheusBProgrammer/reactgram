@@ -1,4 +1,4 @@
-const { Schema, model, objectId } = require("mongoose");
+const { Schema, model } = require("mongoose");
 
 const photoSchema = new Schema(
   {
@@ -6,7 +6,11 @@ const photoSchema = new Schema(
     title: String,
     likes: Array,
     comments: Array,
-    userId: objectId,
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User", // Referenciar o modelo de usuário
+      required: true, // Tornar o campo obrigatório
+    },
     userName: String,
   },
   {
