@@ -1,23 +1,51 @@
 const express = require("express");
 const router = express.Router();
 
-//controllers
-const { insertPhoto, deletePhoto } = require("../controllers/PhotoController");
-//middlewares
+// Importando os controllers
+const {
+  insertPhoto,
+  deletePhoto,
+  getAllPhotos,
+  getUserPhotos,
+  getPhotoById,
+  updatePhoto,
+  likePhoto,
+} = require("../controllers/PhotoController");
+
+// Importando os middlewares de validação
 const { photoInsertValidation } = require("../middlewares/photoValidation");
-const authGuard = require("../middlewares/authGuard"); //validação de tokens
+const authGuard = require("../middlewares/authGuard"); // Middleware para validação de tokens
 const validate = require("../middlewares/handleValidation");
 const imageUpload = require("../middlewares/imageUpload");
-//routes
 
+// Rotas
+
+// Rota para inserir uma nova foto
 router.post(
   "/",
-  authGuard, //checagem de token e definição do req.user
-  imageUpload.single("image"), //multer para upload de imagens na pasta
-  photoInsertValidation(), //validações dos campos necessários
-  validate, //exibição do array de erros
-  insertPhoto //função para inserção de fotos
+  authGuard, // Middleware para verificar autenticação (validação de token)
+  imageUpload.single("image"), // Middleware para upload de imagens na pasta
+  photoInsertValidation(), // Middleware para validar os campos necessários para a inserção de fotos
+  validate, // Middleware para exibição de array de erros
+  insertPhoto // Função do controller para inserir fotos
 );
 
+// Rota para obter todas as fotos
+router.get("/", authGuard, getAllPhotos);
+
+// Rota para obter todas as fotos de um usuário específico
+router.get("/user/:id", authGuard, getUserPhotos);
+
+// Rota para obter uma foto pelo seu ID
+router.get("/:id", authGuard, getPhotoById);
+
+// Rota para atualizar o título de uma foto do usuário
+router.put("/:id", authGuard, updatePhoto);
+
+// Rota para curtir uma foto
+router.put("/like/:id", authGuard, likePhoto);
+
+// Rota para deletar uma foto pelo seu ID
 router.delete("/:id", authGuard, deletePhoto);
+
 module.exports = router;

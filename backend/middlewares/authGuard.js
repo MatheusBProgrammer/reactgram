@@ -1,40 +1,42 @@
-// Importa o modelo de usuário
-const User = require("../models/User");
+/*
+Este middleware realiza a autenticação do usuário por meio de tokens JWT (JSON Web Tokens).
+Quando uma requisição é feita a uma rota protegida, este middleware verifica se o token JWT é fornecido
+no cabeçalho de autorização da requisição. Se o token for válido, o middleware decodifica o token, 
+busca o usuário associado a ele no banco de dados e define o objeto req.user com as informações do usuário autenticado.
+Caso o token seja inválido ou não fornecido, o middleware retorna uma resposta de erro.
+*/
 
-// Importa a biblioteca jwt para autenticação
-const jwt = require("jsonwebtoken");
-
-// Obtém a chave secreta JWT do ambiente
-const jwtSecret = process.env.JWT_CODE;
+// Importações necessárias
+const User = require("../models/User"); // Modelo de usuário
+const jwt = require("jsonwebtoken"); // Biblioteca JWT para autenticação
+const jwtSecret = process.env.JWT_CODE; // Chave secreta JWT do ambiente
 
 // Middleware de autenticação do token e definição do req.user
 const authGuard = async (req, res, next) => {
-  // Obtém o cabeçalho de autorização da requisição
-  const authHeader = req.headers["authorization"];
-
-  // Extrai o token do cabeçalho de autorização
-  const token = authHeader && authHeader.split(" ")[1]; // separa o token em duas parte e pega a segunda
-
-  // Verifica se o token existe
-  if (!token) return res.status(401).json({ errors: "Acesso negado" });
-
-  // Verifica se o token é válido
   try {
-    // Verifica o token usando a chave secreta
-    const verified = jwt.verify(token, jwtSecret);
+    const authHeader = req.headers["authorization"]; // Obtém o cabeçalho de autorização
+    if (!authHeader) {
+      // Verifica se o cabeçalho de autorização existe
+      return res
+        .status(401)
+        .json({ errors: "Acesso negado - Token não fornecido" });
+    }
 
-    // Busca o usuário pelo ID contido no token e exclui a senha do resultado
-    //define req.user
-    req.user = await User.findById(verified.id).select("-password");
+    const token = authHeader.split(" ")[1]; // Extrai o token do cabeçalho de autorização
+    if (!token) {
+      // Verifica se o token existe
+      return res
+        .status(401)
+        .json({ errors: "Acesso negado - Token não fornecido" });
+    }
 
-    // Chama o próximo middleware na cadeia
-    console.log(req.user);
-    next();
-  } catch (e) {
-    // Retorna um erro caso o token seja inválido
-    res.status(401).json({ errors: "Token inválido" });
+    const verified = jwt.verify(token, jwtSecret); // Verifica se o token é válido
+    req.user = await User.findById(verified.id).select("-password"); // Busca o usuário pelo ID contido no token
+    next(); // Chama o próximo middleware na cadeia
+  } catch (error) {
+    // Retorna um erro caso o token seja inválido ou ocorra qualquer erro durante a autenticação
+    res.status(401).json({ errors: "Acesso negado - Token inválido" });
   }
 };
 
-// Exporta o middleware de guarda de autenticação
-module.exports = authGuard;
+module.exports = authGuard; // Exporta o middleware de guarda de autenticação
