@@ -1,7 +1,7 @@
 // Importa a função `validationResult` do pacote express-validator
 const { validationResult } = require("express-validator");
 
-// Middleware de validação
+// Middleware de validação e exibição dos erros
 const validate = (req, res, next) => {
   // Verifica se há erros de validação na requisição
   const errors = validationResult(req);
