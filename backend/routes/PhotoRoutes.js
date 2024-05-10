@@ -10,6 +10,9 @@ const {
   getPhotoById,
   updatePhoto,
   likePhoto,
+  unlike,
+  commentPhoto,
+  searchPhotos,
 } = require("../controllers/PhotoController");
 
 // Importando os middlewares de validação
@@ -33,6 +36,9 @@ router.post(
 // Rota para obter todas as fotos
 router.get("/", authGuard, getAllPhotos);
 
+// Rota para pesquisar fotos por título
+router.get("/search", searchPhotos);
+
 // Rota para obter todas as fotos de um usuário específico
 router.get("/user/:id", authGuard, getUserPhotos);
 
@@ -44,6 +50,12 @@ router.put("/:id", authGuard, updatePhoto);
 
 // Rota para curtir uma foto
 router.put("/like/:id", authGuard, likePhoto);
+
+// Rota para descurtir uma foto
+router.put("/dislike/:id", authGuard, unlike);
+
+// Rota para adicionar um comentário a uma foto
+router.put("/comment/:id", authGuard, commentPhoto);
 
 // Rota para deletar uma foto pelo seu ID
 router.delete("/:id", authGuard, deletePhoto);
