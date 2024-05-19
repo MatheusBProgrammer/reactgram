@@ -26,9 +26,9 @@ const insertPhoto = async (req, res) => {
       userName: user.name,
     });
 
-    res.status(200).json({ newPhoto }); // Retorna a nova foto criada
+    return res.status(200).json({ newPhoto }); // Retorna a nova foto criada
   } catch (error) {
-    res
+    return res
       .status(500)
       .json({ error: "Erro ao inserir a foto", details: error.message }); // Retorna um erro em caso de falha
   }

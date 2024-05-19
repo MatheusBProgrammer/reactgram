@@ -1,0 +1,40 @@
+#nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #000;
+  border-bottom: 1px solid #363636;
+  padding: 0.1em 1em;
+}
+
+#search-form {
+  display: flex; /* Alteração aqui */
+  align-items: center; /* Alteração aqui */
+  width: 20%;
+}
+#search-form svg {
+  cursor: pointer;
+  margin-right: 1em;
+  font-size: 1.5em;
+}
+#search-form input {
+  padding: 0.5em;
+  border: none;
+  border-radius: 5px;
+  width: 100%;
+}
+
+#nav-links {
+  display: flex;
+  align-items: center;
+}
+#nav-links li {
+  margin-right: 1em;
+}
+
+#nav-links span {
+  cursor: pointer;
+}
+#nav-links svg {
+  font-size: 1.5em;
+}

@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Middleware para permitir requisições de diferentes origens usando CORS
-app.use(cors({ credentials: true, origin: "http://localhost:3333" }));
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
 // Rotas da aplicação
 const router = require("./routes/Router.js");
@@ -28,7 +28,7 @@ app.use(router);
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
 // Conexão com o banco de dados
-require("./config/db.js");
+require("./config/db.js")();
 
 // Inicializa o servidor na porta especificada
 app.listen(port, () => {
