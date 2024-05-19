@@ -1,48 +1,59 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-//Redux
-import { register, reset } from "../slices/authSlice";
-import { useSelector, useDispatch } from "react-redux";
+// Importa funções específicas do Redux para uso no componente
+import { register, reset } from "../slices/authSlice"; // Importa as ações 'register' e 'reset' do slice de autenticação
+import { useSelector, useDispatch } from "react-redux"; // Importa os hooks 'useSelector' e 'useDispatch' do Redux
 
 function Register() {
-  // Estado único para todos os campos do formulário
+  // Estado local para gerenciar os dados do formulário
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
 
+  // useDispatch é um hook do Redux usado para disparar ações definidas no slice
+  // Ele retorna uma referência para a função 'dispatch' do Redux store.
   const dispatch = useDispatch();
+
+  // useSelector é um hook do Redux que permite acessar o estado global da aplicação
+  // Aqui, ele está sendo usado para acessar a parte do estado que lida com autenticação (definido em authSlice)
+  // 'loading' e 'error' são propriedades do estado que indicam se uma operação está em andamento e se ocorreu um erro, respectivamente.
   const { loading, error } = useSelector((state) => state.auth);
 
+  // Estado local para manejar mensagens de erro
   const [errors, setError] = useState("");
 
-  // Manipulador genérico de mudanças
+  // Função para lidar com mudanças nos inputs do formulário
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
     });
+    // Limpa mensagens de erro anteriores quando o usuário começa a digitar novamente
     if (errors) {
       setError("");
     }
   };
 
+  // Função para lidar com o envio do formulário
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Validação básica
+    // Verifica se todos os campos estão preenchidos
     if (!formData.name || !formData.email || !formData.password) {
       setError("Todos os campos são obrigatórios");
       return;
     }
-
-    // Aqui você pode adicionar a lógica para enviar os dados do formulário
-    console.log(formData);
+    // Limpa mensagens de erro anteriores
     setError("");
+    // Dispara a ação de registro utilizando o hook useDispatch
     dispatch(register(formData));
   };
+
+  // useEffect é um hook do React que executa efeitos colaterais em componentes funcionais
+  // Aqui, é usado para resetar o estado de autenticação quando há uma mudança no estado de 'errors'
+  // Especificamente, ele dispara a ação 'reset' quando o componente é montado ou o valor de 'errors' muda
   useEffect(() => {
     dispatch(reset());
   }, [errors, dispatch]);
@@ -73,8 +84,12 @@ function Register() {
           value={formData.password}
           onChange={handleOnChange}
         />
-        <input type="submit" value="Cadastrar" />
-        {errors && <p style={{ color: "red" }}>{errors}</p>}
+        {!loading ? (
+          <input type="submit" value="Cadastrar" />
+        ) : (
+          <input type="submit" value="Aguarde..." disabled />
+        )}
+        {error && <p style={{ color: "red" }}>{error.msg}</p>}
       </form>
       <p>
         Já possui conta? <Link to="/login">Clique aqui</Link>

@@ -28,6 +28,7 @@ const register = async (data) => {
       // Armazena os dados do usuário no localStorage do navegador como uma string JSON
       localStorage.setItem("user", JSON.stringify(res));
     }
+    return res;
   } catch (error) {
     // Captura quaisquer erros na execução da função e exibe um alerta com a mensagem de erro
     alert(error);

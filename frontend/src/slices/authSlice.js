@@ -26,6 +26,8 @@ export const register = createAsyncThunk(
     // Verifica se houve erros na resposta.
     if (data.errors) {
       // Se houver erros, rejeita a ação com o primeiro erro encontrado.
+      console.log(data.errors[0]);
+
       return thunkAPI.rejectWithValue(data.errors[0]);
     }
 
@@ -35,6 +37,7 @@ export const register = createAsyncThunk(
 );
 
 // Cria um slice de autenticação usando createSlice. Um slice combina reducers e ações em uma única unidade.
+// O slice define como o estado deve ser atualizado em resposta a ações assíncronas enviadas por createAsyncThunk.
 export const authSlice = createSlice({
   name: "auth", // Nome do slice.
   initialState, // Estado inicial definido anteriormente.
