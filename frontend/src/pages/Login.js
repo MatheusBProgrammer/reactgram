@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom"; // Adicionado useNavigate para redirecionamento
-import { reset } from "../slices/authSlice"; // Importa as ações 'login' e 'reset' do slice de autenticação
+import { reset, login } from "../slices/authSlice"; // Importa as ações 'login' e 'reset' do slice de autenticação
 import { useSelector, useDispatch } from "react-redux"; // Importa os hooks 'useSelector' e 'useDispatch' do Redux
 
 function Login() {
@@ -47,8 +47,7 @@ function Login() {
     // Limpa mensagens de erro anteriores
     setError("");
     // Dispara a ação de login utilizando o hook useDispatch
-    /*     dispatch(login(formData));
-     */
+    dispatch(login(formData));
   };
 
   // useEffect é um hook do React que executa efeitos colaterais em componentes funcionais
