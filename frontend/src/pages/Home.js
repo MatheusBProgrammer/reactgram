@@ -1,9 +1,17 @@
-import React from "react";
-
+import React, { useEffect } from "react";
+import { useAuth } from "../hooks/useAuth";
 function Home() {
+  const { auth } = useAuth();
+  useEffect(() => {}, [auth]);
   return (
     <div>
-      <h1>Home</h1>
+      <button
+        onClick={() => {
+          localStorage.removeItem("user");
+        }}
+      >
+        Clique
+      </button>
     </div>
   );
 }

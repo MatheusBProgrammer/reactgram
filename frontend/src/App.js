@@ -1,25 +1,37 @@
-import "./App.css";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Register from "./pages/Register";
+import "./App.css";
+import { useAuth } from "./hooks/useAuth";
+
 function App() {
+  const { auth } = useAuth();
   return (
-    <div className="App">
-      <BrowserRouter>
+    <Router>
+      <div className="App">
         <Navbar />
         <div className="container">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route
+              path="/"
+              element={auth ? <Home /> : <Navigate to="/register" />}
+            />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>
         </div>
         <Footer />
-      </BrowserRouter>
-    </div>
+      </div>
+    </Router>
   );
 }
 

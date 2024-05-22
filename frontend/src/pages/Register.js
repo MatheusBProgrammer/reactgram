@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-// Importa funções específicas do Redux para uso no componente
+import { Link } from "react-router-dom"; // Adicionado useHistory para redirecionamento
 import { register, reset } from "../slices/authSlice"; // Importa as ações 'register' e 'reset' do slice de autenticação
 import { useSelector, useDispatch } from "react-redux"; // Importa os hooks 'useSelector' e 'useDispatch' do Redux
 
@@ -23,6 +22,8 @@ function Register() {
 
   // Estado local para manejar mensagens de erro
   const [errors, setError] = useState("");
+
+  // useAuth é um hook personalizado para verificar a autenticação do usuário
 
   // Função para lidar com mudanças nos inputs do formulário
   const handleOnChange = (e) => {
@@ -57,6 +58,8 @@ function Register() {
   useEffect(() => {
     dispatch(reset());
   }, [errors, dispatch]);
+
+  // Redireciona para a página principal se o usuário estiver autenticado
 
   return (
     <div>
