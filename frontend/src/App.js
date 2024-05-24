@@ -12,6 +12,7 @@ import Footer from "./components/Footer";
 import Register from "./pages/Register";
 import "./App.css";
 import { useAuth } from "./hooks/useAuth";
+import EditProfile from "./pages/editProfile/EditProfile";
 
 function App() {
   const { auth } = useAuth();
@@ -27,6 +28,7 @@ function App() {
             />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/profile" element={<EditProfile />} />
           </Routes>
         </div>
         <Footer />
