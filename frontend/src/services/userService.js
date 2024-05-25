@@ -18,9 +18,37 @@ const profile = async (data, token) => {
   }
 };
 
+const updateProfile = async (data, token) => {
+  const config = requestConfig("PUT", data, token, true);
+  try {
+    const res = await fetch(api + "users/", config)
+      .then((res) => res.json)
+      .catch((error) => error);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//Get user details
+const getUserDetails = async (id) => {
+  const config = requestConfig("GET");
+  const res = fetch(api + "users/" + id, config)
+    .then((res) => res.json())
+    .catch((e) => e);
+
+  return res;
+
+  try {
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 // Define um objeto userService que contém a função profile
 const userService = {
   profile,
+  updateProfile,
+  getUserDetails,
 };
 
 // Exporta o objeto userService como padrão do módulo

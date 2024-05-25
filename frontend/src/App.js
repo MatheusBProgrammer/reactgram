@@ -13,6 +13,7 @@ import Register from "./pages/Register";
 import "./App.css";
 import { useAuth } from "./hooks/useAuth";
 import EditProfile from "./pages/editProfile/EditProfile";
+import Profile from "./pages/profile/Profile";
 
 function App() {
   const { auth } = useAuth();
@@ -29,6 +30,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<EditProfile />} />
+            <Route path="/profile/:id" element={<Profile />} />
           </Routes>
         </div>
         <Footer />

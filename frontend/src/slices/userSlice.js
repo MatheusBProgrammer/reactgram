@@ -25,6 +25,27 @@ export const profile = createAsyncThunk(
     return data; // Retornando os dados obtidos
   }
 );
+export const updateProfile = createAsyncThunk(
+  "user/updateprofile",
+  async (user, thunkApi) => {
+    const token = thunkApi.getState().auth.user.token;
+
+    const data = await userService.updateProfile(user, token);
+    if (data.errors) {
+      return thunkApi.rejectWithValue(data.errors[0]);
+    }
+    return data;
+  }
+);
+export const getUserDetails = createAsyncThunk(
+  "user/getuserdetails",
+  async (id, thunkApi) => {
+    const data = await userService.updateProfile(id);
+    if (data.errors) {
+      return thunkApi.rejectWithValue(data.errors[0]);
+    }
+  }
+);
 
 // Criando o slice de usuário
 export const userSlice = createSlice({
@@ -56,6 +77,33 @@ export const userSlice = createSlice({
         state.loading = false; // Indicando que a operação foi concluída
         state.error = true; // Indicando que houve um erro
         state.message = action.error.message; // Armazenando a mensagem de erro
+      })
+      .addCase(updateProfile.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.error = null;
+        state.user = action.payload;
+        state.message = "Usuário atualizado com sucesso";
+      })
+      .addCase(updateProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.user = null;
+      })
+      .addCase(getUserDetails.pending, (state) => {
+        state.loading = true; // Indicando que a operação está em andamento
+        state.error = false; // Resetando a flag de erro
+      })
+      // Caso a ação de perfil tenha sido concluída com sucesso
+      .addCase(getUserDetails.fulfilled, (state, action) => {
+        state.loading = false; // Indicando que a operação foi concluída
+        state.success = true; // Indicando que a operação foi bem-sucedida
+        state.error = null; // Resetando a flag de erro
+        state.user = action.payload; // Armazenando os dados do usuário obtidos
       });
   },
 });

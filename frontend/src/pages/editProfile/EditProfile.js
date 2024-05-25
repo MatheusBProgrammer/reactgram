@@ -1,8 +1,7 @@
 import "./EditProfile.css"; // Importa o arquivo CSS para estilizar o componente
 import { useEffect, useState } from "react"; // Importa hooks do React para efeitos colaterais e gerenciamento de estado
 import { useSelector, useDispatch } from "react-redux"; // Importa hooks do Redux para acessar e modificar o estado global
-
-import { profile, resetMessage } from "../../slices/userSlice"; // Importa ações do slice de usuário do Redux
+import { profile, resetMessage, updateProfile } from "../../slices/userSlice"; // Importa ações do slice de usuário do Redux
 import Message from "../../components/Message"; // Importa o componente Message para exibir mensagens de feedback
 
 function EditProfile() {
@@ -34,38 +33,40 @@ function EditProfile() {
 
   // Função para lidar com a mudança de imagem de perfil
   const handleImageChange = (e) => {
-    const file = e.target.files[0]; // Obtém o arquivo de imagem selecionado pelo usuário
-    setProfileImage(file); // Atualiza o estado local com o arquivo de imagem
-    setPreviewImage(URL.createObjectURL(file)); // Cria e define a URL de pré-visualização para exibir a imagem selecionada
+    const image = e.target.files[0]; // Obtém o arquivo de imagem selecionado pelo usuário
+    setProfileImage(image);
+    setPreviewImage(URL.createObjectURL(image));
   };
 
   // Função para lidar com o envio do formulário
   const handleSubmit = (event) => {
     event.preventDefault(); // Previne o comportamento padrão do formulário de recarregar a página
     // Cria um objeto com os dados do formulário
-    const userData = {
-      name,
-      email,
-      password,
-      bio,
-      profileImage,
-    };
+    const userData = new FormData();
+    userData.append("name", name);
+    userData.append("email", email);
+    userData.append("password", password);
+    userData.append("bio", bio);
+    if (profileImage) {
+      userData.append("profileImage", profileImage);
+    }
 
     // Despacha a ação para atualizar o perfil do usuário com os dados do formulário
+    dispatch(updateProfile(userData));
   };
 
   return (
     <div id="edit-profile-container">
       <h2>Edite seus dados</h2> {/* Título da seção de edição de perfil */}
-      <p>Adicione uma imagem de perfil e conte mais sobre você...</p>{" "}
+      <p>Adicione uma imagem de perfil e conte mais sobre você...</p>
+      {/* Imagem de pré-vizualização */}
+      {previewImage && <img src={previewImage} alt="Preview" />}
       {/* Descrição da seção */}
       {message && <Message type="success" msg={message} />}{" "}
-      {/* Exibe mensagem de sucesso se houver */}
+      {/* Exibe mensagem de erro se houver */}
       {error && <Message type="error" msg={error} />}{" "}
       {/* Exibe mensagem de erro se houver */}
       <form onSubmit={handleSubmit}>
-        {" "}
-        {/* Define a função handleSubmit para lidar com o envio do formulário */}
         <input
           type="text"
           placeholder="Nome"
@@ -80,10 +81,8 @@ function EditProfile() {
         />
         <label>
           <span>Imagem do perfil</span> {/* Texto explicativo */}
-          <input type="file" onChange={handleImageChange} />{" "}
+          <input type="file" onChange={handleImageChange} />
           {/* Define a função handleImageChange para lidar com a seleção de arquivos */}
-          {previewImage && <img src={previewImage} alt="Preview" />}{" "}
-          {/* Exibe a imagem de pré-visualização se houver */}
         </label>
         <label>
           <span>Bio:</span> {/* Texto explicativo */}
@@ -103,7 +102,12 @@ function EditProfile() {
             value={password || ""} // Define o valor do campo com o estado atual da senha
           />
         </label>
-        <input type="submit" value="Atualizar" disabled={loading} />{" "}
+        {!loading ? (
+          <input type="submit" value="Atualizar" />
+        ) : (
+          <input type="submit" value="Aguarde..." disabled />
+        )}
+        {error && <p style={{ color: "red" }}>{error.msg}</p>}{" "}
         {/* Botão de submit, desativado se estiver carregando */}
       </form>
     </div>
